@@ -19,8 +19,12 @@ screen = pygame.display.set_mode((width, height))
 clock = pygame.time.Clock()
 
 # ✅ Maintenant on peut charger et convertir l’image
-image_surface = pygame.image.load("no.png").convert_alpha()
-image_position = (10,10)
+image_surface = pygame.image.load("dinguerie.png").convert_alpha()
+# Resize image to width=100, height=100 (adjust as needed)
+image_surface = pygame.transform.scale(image_surface, (150, 100))
+padding = 10
+image_position = (width - image_surface.get_width() - padding, padding)
+
 
 # Intervalles d’affichage de l’image (secondes)
 image_intervals = [(5, 8), (12, 14)]
@@ -35,7 +39,7 @@ while running:
 
     time_sec = frame_idx / fps
     frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    frame_surface = pygame.surfarray.make_surface(np.rot90(frame_rgb))
+    frame_surface = pygame.surfarray.make_surface(np.transpose(frame_rgb, (1, 0, 2)))
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:

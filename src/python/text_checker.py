@@ -1,4 +1,5 @@
 from model import call_openai
+from source_search import find_source
 import re
 
 def fact_check_text(text):
@@ -6,7 +7,11 @@ def fact_check_text(text):
     
     prompt = "Hello, is this statement true ? Write Yes or No in the beginning followed by an explanation "
     prompt += text
-    
+
+    #source = find_source(text)
+
+    print(prompt)
+
     str = call_openai(prompt)
 
     (answer, explanation) = extract_answer(str)

@@ -1,5 +1,7 @@
 from text_checker import fact_check_text
 from pipeline import video_to_verdict
+from source_search import find_source
+from source_search import google_search
 
 def main():
     #test("Petrol comes from dinosaurs")

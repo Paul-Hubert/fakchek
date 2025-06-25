@@ -1,0 +1,4 @@
+conda create -n fak python=3.10
+conda activate fak
+conda install openai
+pip install openai-whisper

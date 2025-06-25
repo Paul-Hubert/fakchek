@@ -2,10 +2,12 @@ from text_checker import fact_check_text
 from pipeline import video_to_verdict
 from source_search import find_source
 from source_search import google_search
+from read_video import show_video
 
 def main():
     #test("Petrol comes from dinosaurs")
     #test("Cheese comes from a cow")
+    
     test_video("trump_fakcheck.mp4")
 
 def test(str):
@@ -25,6 +27,12 @@ def test_video(path):
     print(is_true)
     print("Explanation : ")
     print(answer)
+    
+    
+    video_path = "trump_fakcheck.mp4"
+    audio_path = "audio.wav"  # Si la vidéo contient aussi l’audio
+
+    show_video(video_path, audio_path)
 
 if __name__ == "__main__":
     main()

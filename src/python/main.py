@@ -1,7 +1,7 @@
 from text_checker import fact_check_text
 
 def main():
-    print(fact_check_text("Petrol comes from dinosaurs"))
+    print("Do nothing")
 
 if __name__ == "__main__":
     main()

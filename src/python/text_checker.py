@@ -8,9 +8,11 @@ def fact_check_text(text):
     prompt = "Hello, is this statement true ? Write Yes or No in the beginning followed by an explanation "
     prompt += text
 
-    #source = find_source(text)
+    source = find_source(text)
 
-    print(prompt)
+    if source != "":
+        prompt += "\n Here is additional context from a google search to help fact check : "
+        prompt += source
 
     str = call_openai(prompt)
 

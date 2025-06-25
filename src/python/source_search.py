@@ -1,4 +1,5 @@
 from model import call_openai
+import os
 import requests
 from bs4 import BeautifulSoup
 
@@ -8,7 +9,6 @@ def find_source(text):
 
     url = google_search(search_prompt)
     if url:
-        print(url)
         page_text = extract_text_from_url(url)
         print(page_text)
         return page_text
@@ -16,21 +16,26 @@ def find_source(text):
         return ""
 
 
+
 def google_search(query):
-    # Use DuckDuckGo as a simple alternative to Google for scraping
-    search_url = "https://duckduckgo.com/html/"
-    params = {"q": query}
-    headers = {
-        "User-Agent": "Mozilla/5.0"
+    key = get_key()
+
+    # Call Custom Search JSON API with key
+    search_engine_id = "51278d25f36c44d64"  # Replace with your actual search engine ID
+
+    url = "https://www.googleapis.com/customsearch/v1"
+    params = {
+        "key": key,
+        "cx": search_engine_id,
+        "q": query,
+        "num": 1
     }
-    response = requests.get(search_url, params=params, headers=headers)
+    response = requests.get(url, params=params)
     
-    print(response.text)
-    soup = BeautifulSoup(response.text, "html.parser")
-    results = soup.find_all("a", class_="result__a")
-    print(results)
-    if results:
-        return results[0].get("href")
+    if response.status_code == 200:
+        results = response.json()
+        if "items" in results and len(results["items"]) > 0:
+            return results["items"][0]["link"]
     return None
 
 def extract_text_from_url(url):
@@ -46,3 +51,7 @@ def extract_text_from_url(url):
     except Exception as e:
         return ""
 
+def get_key():
+    with open(os.path.join(os.path.dirname(__file__), 'google_key.txt'), 'r') as f:
+        KEY = f.read().strip()
+        return KEY

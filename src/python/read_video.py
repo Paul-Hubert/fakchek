@@ -1,9 +1,11 @@
 import cv2
 import pygame
 import numpy as np
+import time
 
-# Chargement vidéo
 video_path = "trump_fakcheck.mp4"
+audio_path = "audio.wav"  # Si la vidéo contient aussi l’audio
+
 cap = cv2.VideoCapture(video_path)
 if not cap.isOpened():
     print("Erreur : impossible d'ouvrir la vidéo.")
@@ -13,27 +15,36 @@ fps = cap.get(cv2.CAP_PROP_FPS)
 width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
-# ⬇️ Initialise d'abord Pygame et la fenêtre
+# ⬇️ Initialisation de Pygame (affichage + audio)
 pygame.init()
 screen = pygame.display.set_mode((width, height))
 clock = pygame.time.Clock()
 
-# ✅ Maintenant on peut charger et convertir l’image
+# Initialiser le système audio
+pygame.mixer.init()
+
+# Charger l'audio (ça peut être la même vidéo si le format est supporté)
+pygame.mixer.music.load(audio_path)
+pygame.mixer.music.play()
+
+# Chargement image à afficher à un moment donné
 image_surface = pygame.image.load("no.png").convert_alpha()
-image_position = (10,10)
+image_intervals = [(5, 8)]
+image_position = (0, 0)
 
-# Intervalles d’affichage de l’image (secondes)
-image_intervals = [(5, 8), (12, 14)]
-
-running = True
 frame_idx = 0
+start_time = time.time()
+running = True
 
 while running:
     ret, frame = cap.read()
     if not ret:
         break
 
-    time_sec = frame_idx / fps
+    # Calcul du temps écoulé
+    elapsed = time.time() - start_time
+
+    # Convertir et afficher la frame vidéo
     frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     frame_surface = pygame.surfarray.make_surface(np.rot90(frame_rgb))
 
@@ -43,13 +54,16 @@ while running:
 
     screen.blit(frame_surface, (0, 0))
 
+    # Affichage conditionnel de l’image
     for start, end in image_intervals:
-        if start <= time_sec <= end:
+        if start <= elapsed <= end:
             screen.blit(image_surface, image_position)
 
     pygame.display.flip()
     clock.tick(fps)
     frame_idx += 1
 
+# Nettoyage
 cap.release()
+pygame.mixer.music.stop()
 pygame.quit()

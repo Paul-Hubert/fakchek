@@ -8,7 +8,7 @@ def main():
     #test("Petrol comes from dinosaurs")
     #test("Cheese comes from a cow")
     
-    test_video("trump_fakcheck.mp4")
+    test_video("trump_fakcheck.mp4", "audio.wav")
 
 def test(str):
     print("Prompt : ")
@@ -19,7 +19,7 @@ def test(str):
     print("Explanation : ")
     print(answer)
 
-def test_video(path):
+def test_video(path, audio_path):
     print("Prompt : ")
     print(path)
     (is_true, answer) = video_to_verdict(path)
@@ -28,11 +28,8 @@ def test_video(path):
     print("Explanation : ")
     print(answer)
     
-    
-    video_path = "trump_fakcheck.mp4"
-    audio_path = "audio.wav"  # Si la vidéo contient aussi l’audio
 
-    show_video(video_path, audio_path)
+    show_video(is_true, path, audio_path)
 
 if __name__ == "__main__":
     main()

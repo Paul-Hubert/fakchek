@@ -3,71 +3,70 @@ import pygame
 import numpy as np
 import time
 
-video_path = "trump_fakcheck.mp4"
-audio_path = "audio.wav"  # Si la vidéo contient aussi l’audio
+def show_video(is_true, video_path, audio_path):
 
-cap = cv2.VideoCapture(video_path)
-if not cap.isOpened():
-    print("Erreur : impossible d'ouvrir la vidéo.")
-    exit()
+    cap = cv2.VideoCapture(video_path)
+    if not cap.isOpened():
+        print("Erreur : impossible d'ouvrir la vidéo.")
+        exit()
 
-fps = cap.get(cv2.CAP_PROP_FPS)
-width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    fps = cap.get(cv2.CAP_PROP_FPS)
+    width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
-# ⬇️ Initialisation de Pygame (affichage + audio)
-pygame.init()
-screen = pygame.display.set_mode((width, height))
-clock = pygame.time.Clock()
+    # ⬇️ Initialisation de Pygame (affichage + audio)
+    pygame.init()
+    screen = pygame.display.set_mode((width, height))
+    clock = pygame.time.Clock()
 
-# ✅ Maintenant on peut charger et convertir l’image
-image_surface = pygame.image.load("dinguerie.png").convert_alpha()
-# Resize image to width=100, height=100 (adjust as needed)
-image_surface = pygame.transform.scale(image_surface, (150, 100))
-padding = 10
-image_position = (width - image_surface.get_width() - padding, padding)
+    # ✅ Maintenant on peut charger et convertir l’image
+    image_surface = pygame.image.load("dinguerie.png").convert_alpha()
+    # Resize image to width=100, height=100 (adjust as needed)
+    image_surface = pygame.transform.scale(image_surface, (150, 100))
+    padding = 10
+    image_position = (width - image_surface.get_width() - padding, padding)
 
 
-# Initialiser le système audio
-pygame.mixer.init()
+    # Initialiser le système audio
+    pygame.mixer.init()
 
-# Charger l'audio (ça peut être la même vidéo si le format est supporté)
-pygame.mixer.music.load(audio_path)
-pygame.mixer.music.play()
+    # Charger l'audio (ça peut être la même vidéo si le format est supporté)
+    pygame.mixer.music.load(audio_path)
+    pygame.mixer.music.play()
 
-frame_idx = 0
-start_time = time.time()
-running = True
+    frame_idx = 0
+    start_time = time.time()
+    running = True
 
-while running:
-    ret, frame = cap.read()
-    if not ret:
-        break
+    while running:
+        ret, frame = cap.read()
+        if not ret:
+            break
 
-    # Calcul du temps écoulé
-    elapsed = time.time() - start_time
+        # Calcul du temps écoulé
+        elapsed = time.time() - start_time
 
-    # Convertir et afficher la frame vidéo
-    frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    frame_surface = pygame.surfarray.make_surface(np.transpose(frame_rgb, (1, 0, 2)))
+        # Convertir et afficher la frame vidéo
+        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        frame_surface = pygame.surfarray.make_surface(np.transpose(frame_rgb, (1, 0, 2)))
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
 
-    screen.blit(frame_surface, (0, 0))
+        screen.blit(frame_surface, (0, 0))
 
-    # Affichage conditionnel de l’image
-    image_intervals=[(5,8)]
-    for start, end in image_intervals:
-        if start <= elapsed <= end:
-            screen.blit(image_surface, image_position)
+        # Affichage conditionnel de l’image
+        image_intervals=[(5,8)]
+        for start, end in image_intervals:
+            if start <= elapsed <= end:
+                screen.blit(image_surface, image_position)
 
-    pygame.display.flip()
-    clock.tick(fps)
-    frame_idx += 1
+        pygame.display.flip()
+        clock.tick(fps)
+        frame_idx += 1
 
-# Nettoyage
-cap.release()
-pygame.mixer.music.stop()
-pygame.quit()
+    # Nettoyage
+    cap.release()
+    pygame.mixer.music.stop()
+    pygame.quit()

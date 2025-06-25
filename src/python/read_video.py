@@ -58,6 +58,7 @@ while running:
     screen.blit(frame_surface, (0, 0))
 
     # Affichage conditionnel de l’image
+    image_intervals=[(5,8)]
     for start, end in image_intervals:
         if start <= elapsed <= end:
             screen.blit(image_surface, image_position)
